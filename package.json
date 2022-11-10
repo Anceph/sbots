@@ -1,0 +1,19 @@
+{
+  "name": "msb",
+  "version": "1.0.0",
+  "description": "Minecraft Skyblock Bot",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Anceph",
+  "license": "ISC",
+  "dependencies": {
+    "mineflayer": "^4.5.1",
+    "mineflayer-pathfinder": "^2.4.1",
+    "mineflayer-web-inventory": "^1.8.3",
+    "prismarine-entity": "^2.2.0",
+    "vec3": "^0.1.7"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "bot-owner": {
+    "username": "konyalisavasci42"
+  },
+
+  "bot-account": {
+    "username": "testbot35",
+    "password": "",
+    "type": "mojang"
+  },
+
+  "server": {
+    "ip": "testyapiyoz35.aternos.me",
+    "port": 24314,
+    "version": "1.8.9"
+  },
+
+  "position": {
+    "enabled": false,
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+
+  "utils": {
+    "auto-auth": {
+      "enabled": false,
+      "password": "password"
+    },
+
+    "anti-afk": {
+      "enabled": false,
+      "sneak": false
+    },
+
+    "chat-messages": {
+      "enabled": false,
+      "repeat": true,
+      "repeat-delay": 60,
+
+      "messages": [
+        ""
+      ]
+    },
+
+    "chat-log": true,
+    "auto-reconnect": false,
+    "auto-recconect-delay": 5000
+  }
+}
