@@ -1,6 +1,6 @@
 # sbots
 
-an actual docs soon
+an actual docs and command names soon
 
 run `npm i` then `node app.js`
 
