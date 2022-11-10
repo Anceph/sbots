@@ -1,6 +1,7 @@
 const mineflayer = require('mineflayer')
 const inventoryViewer = require('mineflayer-web-inventory')
 const config = require('./settings.json')
+const { mineflayer: mineflayerViewer } = require('prismarine-viewer')
 
 function createBot() {
 
@@ -14,6 +15,10 @@ function createBot() {
     })
 
     inventoryViewer(bot) // Starts a server at http://localhost:3000/ to view your bots inventory easily. 
+
+    bot.once('spawn', () => { // Starts a server at http://localhost:3007/ to see a view from your bots eyes!
+        mineflayerViewer(bot, { port: 3007, firstPerson: true }) // port is the minecraft server port, if first person is false, you get a bird's-eye view
+    })
 
     bot.on('spawn', () => {
         console.log(`\x1b[33m[BOT-LOG] ${config['bot-account']['username']} joined to the server`, `\x1b[0m`)
