@@ -1,18 +1,18 @@
 {
   "bot-owner": {
-    "username": "konyalisavasci42"
+    "username": "ManyakSR"
   },
 
   "bot-account": {
-    "username": "testbot35",
+    "username": "Tornavida",
     "password": "",
     "type": "mojang"
   },
 
   "server": {
-    "ip": "testyapiyoz35.aternos.me",
-    "port": 24314,
-    "version": "1.8.9"
+    "ip": "play.chickennw.com",
+    "port": 25565,
+    "version": "1.16.5"
   },
 
   "position": {
