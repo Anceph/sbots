@@ -54,7 +54,7 @@ function createBot() {
         if (config.utils['chat-log']) {
             console.log(`[CHAT] <${username}> ${message}`)
         }
-        if (config['bot-owner'].username == username) {
+        if (config['bot-owner'].username == username || config['bot-owner'].username2 == username) {
             if (message.includes('ben')) { // Private message prefix changes according to the server. You need to figure it out yourself. Example: https://i.imgur.com/7PCE1RU.png
                 let args = message.split(' ')
                 if (args[2] == "dig") {
