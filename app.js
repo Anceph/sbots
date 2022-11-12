@@ -5,6 +5,8 @@ const autoeat = require("mineflayer-auto-eat")
 
 const config = require('./settings.json')
 
+var canDig = true
+
 function createBot() {
 
     const bot = mineflayer.createBot({
@@ -21,9 +23,9 @@ function createBot() {
 
     bot.once('spawn', () => { // Starts a server at http://localhost:3007/ to see a view from your bots eyes or bird's-eye.
         mineflayerViewer(bot, { port: 3007, firstPerson: false }) // port is the minecraft server port, if first person is false, you get a bird's-eye view
-        bot.autoEat.options.priority = "foodPoints"
-        bot.autoEat.options.bannedFood = []
-        bot.autoEat.options.eatingTimeout = 3
+        // bot.autoEat.options.priority = "foodPoints"
+        // bot.autoEat.options.bannedFood = []
+        // bot.autoEat.options.eatingTimeout = 3
     })
 
     bot.on('spawn', () => {
@@ -55,53 +57,53 @@ function createBot() {
             console.log(`[CHAT] <${username}> ${message}`)
         }
         if (config['bot-owner'].username == username || config['bot-owner'].username2 == username) {
-            if (message.includes('ben')) { // Private message prefix changes according to the server. You need to figure it out yourself. Example: https://i.imgur.com/7PCE1RU.png
+            if (message.includes('me')) { // Private message prefix changes according to the server. You need to figure it out yourself. Example: https://i.imgur.com/7PCE1RU.png
                 let args = message.split(' ')
-                if (args[2] == "dig") {
+                if (args[1] == "dig") {
                     dig(bot)
                     bot.chat(`/msg ${config['bot-owner']['username']} Starting digging`)
                 }
-                if (args[2] == "isgo") {
+                if (args[1] == "isgo") {
                     bot.chat('/is go')
                     bot.chat(`/msg ${config['bot-owner']['username']} Teleporting to island`)
                 }
-                if (args[2] == "home") {
+                if (args[1] == "home") {
                     bot.chat('/home')
                     bot.chat(`/msg ${config['bot-owner']['username']} Teleporting to home`)
                 }
-                if (args[2] == "tpa") {
-                    if (!args[3]) {
+                if (args[1] == "tpa") {
+                    if (!args[2]) {
                         bot.chat(`/msg ${config['bot-owner']['username']} Specify a player to teleport`)
                     } else {
                         bot.chat(`/tpa ${args[2]}`)
                     }
                 }
-                if (args[2] == "sethome") {
+                if (args[1] == "sethome") {
                     bot.chat('/sethome')
                     bot.chat(`/msg ${config['bot-owner']['username']} Set my home to here`)
                 }
-                if (args[2] == "drop") {
-                    if (!args[3]) {
+                if (args[1] == "drop") {
+                    if (!args[2]) {
                         bot.chat(`/msg ${config['bot-owner']['username']} Specify a item to drop`)
                     } else {
                         dropItem(bot, args[2])
                     }
                 }
-                if (args[2] == "equip") {
-                    if (!args[3]) {
+                if (args[1] == "equip") {
+                    if (!args[2]) {
                         bot.chat(`/msg ${config['bot-owner']['username']} Specify a item to equip`)
                     } else {
                         equipItem(bot, args[2])
                     }
                 }
-                if (args[2] == "say") {
+                if (args[1] == "say") {
                     msg = args.slice(2).join(' ')
                     bot.chat(`${msg}`)
                 }
-                if (args[2] == "food") {
+                if (args[1] == "food") {
                     bot.chat(`/msg ${config['bot-owner']['username']} Currently at ${bot.food}`)
                 }
-                if (args[2] == "parca") {
+                if (args[1] == "parca") {
                     parca(bot)
                 }
 
@@ -118,6 +120,10 @@ function createBot() {
             `\x1b[33m[BOT-LOG] Bot has been died and was respawned ${bot.entity.position}`,
             '\x1b[0m'
         )
+        // setTimeout(() => {
+        //     bot.chat(`/home`)
+        //     dig(bot)
+        // }, 3000);
     })
 
     if (config.utils['auto-reconnect']) {
@@ -140,12 +146,28 @@ function createBot() {
         console.log(`\x1b[31m[ERROR] ${err.message}`, '\x1b[0m')
     })
 
-    bot.on('health', () => {
-        if (bot.food == 20) {
-            bot.autoEat.disable()
-        } else {
-            bot.autoEat.enable()
+    bot.on('health', async() => {
+        if (bot.food < 14) {
+            bot.stopDigging()
+            canDig = false
+            await bot.autoEat.eat(function (err) {
+                if (err) {
+                    console.error(err)
+                } else {
+                    console.log("ate")
+                }
+            })
+            setTimeout(() => {
+                equipItem(bot, "diamond_pickaxe")
+                canDig = true
+            }, 3500);
         }
+
+        // if (bot.food == 20) {
+        //     bot.autoEat.disable()
+        // } else {
+        //     bot.autoEat.enable()
+        // }
     })
 }
 
@@ -154,52 +176,58 @@ function naber(bot) {
 }
 
 async function dig(bot) {
-    // let target1 = bot.blockAt(bot.entity.position.offset(0, 1, 1))
-    // let target2 = bot.blockAt(bot.entity.position.offset(0, 1, 2))
-    // let target3 = bot.blockAt(bot.entity.position.offset(0, 1, 3))
-    // let target4 = bot.blockAt(bot.entity.position.offset(0, 1, 4))
-    // let target5 = bot.blockAt(bot.entity.position.offset(0, 1, 5))
-    let target1 = bot.blockAt(bot.entity.position.offset(-1, 1, 0))
-    let target2 = bot.blockAt(bot.entity.position.offset(-2, 1, 0))
-    let target3 = bot.blockAt(bot.entity.position.offset(-3, 1, 0))
-    let target4 = bot.blockAt(bot.entity.position.offset(-4, 1, 0))
-    let target5 = bot.blockAt(bot.entity.position.offset(-5, 1, 0))
+    let target1 = bot.blockAt(bot.entity.position.offset(0, 1, -1))
+    let target2 = bot.blockAt(bot.entity.position.offset(0, 1, -2))
+    let target3 = bot.blockAt(bot.entity.position.offset(0, 1, -3))
+    let target4 = bot.blockAt(bot.entity.position.offset(0, 1, -4))
+    let target5 = bot.blockAt(bot.entity.position.offset(0, 1, -5))
+    // let target1 = bot.blockAt(bot.entity.position.offset(-1, 1, 0))
+    // let target2 = bot.blockAt(bot.entity.position.offset(-2, 1, 0))
+    // let target3 = bot.blockAt(bot.entity.position.offset(-3, 1, 0))
+    // let target4 = bot.blockAt(bot.entity.position.offset(-4, 1, 0))
+    // let target5 = bot.blockAt(bot.entity.position.offset(-5, 1, 0))
 
-    if (bot.targetDigBlock) {
-        return
+    if (canDig == true) {
+        if (bot.targetDigBlock) {
+            return
+        } else {
+            if (target1 && bot.canDigBlock(target1) && bot.blockAt(bot.entity.position.offset(0, 1, -1)).name != "air") {
+                try {
+                    await bot.dig(target1)
+                    await bot.waitForTicks(5)
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+            if (target2 && bot.canDigBlock(target2) && bot.blockAt(bot.entity.position.offset(0, 1, -1)).name == "air") {
+                try {
+                    await bot.dig(target2)
+                    await bot.waitForTicks(5)
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+            if (target3 && bot.canDigBlock(target3) && bot.blockAt(bot.entity.position.offset(0, 1, -1)).name == "air" && bot.blockAt(bot.entity.position.offset(0, 1, -2)).name == "air") {
+                try {
+                    await bot.dig(target3)
+                    await bot.waitForTicks(5)
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+            if (target4 && bot.canDigBlock(target4) && bot.blockAt(bot.entity.position.offset(0, 1, -1)).name == "air" && bot.blockAt(bot.entity.position.offset(0, 1, -3)).name == "air") {
+                try {
+                    await bot.dig(target4)
+                    await bot.waitForTicks(5)
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+        }
     } else {
-        if (target1 && bot.canDigBlock(target1) && bot.blockAt(bot.entity.position.offset(-1, 1, 0)).name != "air") {
-            try {
-                await bot.dig(target1)
-                await bot.waitForTicks(5)
-            } catch (err) {
-                console.log(err)
-            }
-        }
-        if (target2 && bot.canDigBlock(target2) && bot.blockAt(bot.entity.position.offset(-1, 1, 0)).name == "air") {
-            try {
-                await bot.dig(target2)
-                await bot.waitForTicks(5)
-            } catch (err) {
-                console.log(err)
-            }
-        }
-        if (target3 && bot.canDigBlock(target3) && bot.blockAt(bot.entity.position.offset(-1, 1, 0)).name == "air" && bot.blockAt(bot.entity.position.offset(-2, 1, 0)).name == "air") {
-            try {
-                await bot.dig(target3)
-                await bot.waitForTicks(5)
-            } catch (err) {
-                console.log(err)
-            }
-        }
-        if (target4 && bot.canDigBlock(target4) && bot.blockAt(bot.entity.position.offset(-1, 1, 0)).name == "air" && bot.blockAt(bot.entity.position.offset(-3, 1, 0)).name == "air") {
-            try {
-                await bot.dig(target4)
-                await bot.waitForTicks(5)
-            } catch (err) {
-                console.log(err)
-            }
-        }
+        setTimeout(() => {
+            dig(bot)
+        }, 2000);
     }
 
     setTimeout(() => {
@@ -215,9 +243,8 @@ function dropItem(bot, item) {
         setTimeout(() => {
             return
         }, 500);
-        bot.chat(`/msg ${config['bot-owner']['username']} Here you go`)
     } else {
-        bot.chat(`/msg ${config['bot-owner']['username']} Couln't find that item :(`)
+        bot.chat(`/msg ${config['bot-owner']['username']} Couldn't find that item :(`)
     }
 }
 
@@ -227,10 +254,9 @@ async function equipItem(bot, item) {
         if (it.name === item)
             items = it;
     if (!items) {
-        bot.chat(`/msg ${config['bot-owner']['username']} Couln't find that item :(`)
+        bot.chat(`/msg ${config['bot-owner']['username']} Couldn't find that item :(`)
     } else {
         await bot.equip(items, "hand")
-        bot.chat(`/msg ${config['bot-owner']['username']} Let's see...`)
     }
 }
 
