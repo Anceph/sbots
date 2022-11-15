@@ -7,6 +7,8 @@ const config = require('./settings.json')
 
 var canDig = true
 
+var responseName = ""
+
 function createBot() {
 
     const bot = mineflayer.createBot({
@@ -58,6 +60,7 @@ function createBot() {
         }
         if (config['bot-owner'].username == username || config['bot-owner'].username2 == username) {
             if (message.includes('me')) { // Private message prefix changes according to the server. You need to figure it out yourself. Example: https://i.imgur.com/7PCE1RU.png
+                var responseName = username
                 let args = message.split(' ')
                 if (args[1] == "dig") {
                     dig(bot)
@@ -86,14 +89,14 @@ function createBot() {
                     if (!args[2]) {
                         bot.chat(`/msg ${config['bot-owner']['username']} Specify a item to drop`)
                     } else {
-                        dropItem(bot, args[2])
+                        dropItem(bot, args[2], responseName)
                     }
                 }
                 if (args[1] == "equip") {
                     if (!args[2]) {
                         bot.chat(`/msg ${config['bot-owner']['username']} Specify a item to equip`)
                     } else {
-                        equipItem(bot, args[2])
+                        equipItem(bot, args[2], responseName)
                     }
                 }
                 if (args[1] == "say") {
@@ -158,7 +161,7 @@ function createBot() {
                 }
             })
             setTimeout(() => {
-                equipItem(bot, "diamond_pickaxe")
+                equipItem(bot, "netherite_pickaxe")
                 canDig = true
             }, 3500);
         }
@@ -235,7 +238,7 @@ async function dig(bot) {
     }, 2000);
 }
 
-function dropItem(bot, item) {
+function dropItem(bot, item, name) {
     const excludedItems = [item]
     const items = bot.inventory.items().find(item => excludedItems.includes(item.name))
     if (items) {
@@ -244,17 +247,17 @@ function dropItem(bot, item) {
             return
         }, 500);
     } else {
-        bot.chat(`/msg ${config['bot-owner']['username']} Couldn't find that item :(`)
+        bot.chat(`/msg ${name} Couldn't find that item :(`)
     }
 }
 
-async function equipItem(bot, item) {
+async function equipItem(bot, item, name) {
     var items;
     for (const it of bot.inventory.items())
         if (it.name === item)
             items = it;
     if (!items) {
-        bot.chat(`/msg ${config['bot-owner']['username']} Couldn't find that item :(`)
+        bot.chat(`/msg ${name} Couldn't find that item :(`)
     } else {
         await bot.equip(items, "hand")
     }
