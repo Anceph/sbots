@@ -64,37 +64,37 @@ function createBot() {
                 let args = message.split(' ')
                 if (args[1] == "dig") {
                     dig(bot)
-                    bot.chat(`/msg ${config['bot-owner']['username']} Starting digging`)
+                    bot.chat(`/msg ${responseName} Starting digging`)
                 }
                 if (args[1] == "isgo") {
                     bot.chat('/is go')
-                    bot.chat(`/msg ${config['bot-owner']['username']} Teleporting to island`)
+                    bot.chat(`/msg ${responseName} Teleporting to island`)
                 }
                 if (args[1] == "home") {
                     bot.chat('/home')
-                    bot.chat(`/msg ${config['bot-owner']['username']} Teleporting to home`)
+                    bot.chat(`/msg ${responseName} Teleporting to home`)
                 }
                 if (args[1] == "tpa") {
                     if (!args[2]) {
-                        bot.chat(`/msg ${config['bot-owner']['username']} Specify a player to teleport`)
+                        bot.chat(`/msg ${responseName} Specify a player to teleport`)
                     } else {
                         bot.chat(`/tpa ${args[2]}`)
                     }
                 }
                 if (args[1] == "sethome") {
                     bot.chat('/sethome')
-                    bot.chat(`/msg ${config['bot-owner']['username']} Set my home to here`)
+                    bot.chat(`/msg ${responseName} Set my home to here`)
                 }
                 if (args[1] == "drop") {
                     if (!args[2]) {
-                        bot.chat(`/msg ${config['bot-owner']['username']} Specify a item to drop`)
+                        bot.chat(`/msg ${responseName} Specify a item to drop`)
                     } else {
                         dropItem(bot, args[2], responseName)
                     }
                 }
                 if (args[1] == "equip") {
                     if (!args[2]) {
-                        bot.chat(`/msg ${config['bot-owner']['username']} Specify a item to equip`)
+                        bot.chat(`/msg ${responseName} Specify a item to equip`)
                     } else {
                         equipItem(bot, args[2], responseName)
                     }
@@ -104,7 +104,7 @@ function createBot() {
                     bot.chat(`${msg}`)
                 }
                 if (args[1] == "food") {
-                    bot.chat(`/msg ${config['bot-owner']['username']} Currently at ${bot.food}`)
+                    bot.chat(`/msg ${responseName} Currently at ${bot.food}`)
                 }
                 if (args[1] == "parca") {
                     parca(bot)
