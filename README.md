@@ -1,3 +1,5 @@
+##stopped working on it
+
 # sbots
 
 an actual docs and command names soon
