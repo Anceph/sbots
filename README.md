@@ -1,6 +1,6 @@
-#stopped working on it
+# stopped working on it
 
-# sbots
+## sbots
 
 an actual docs and command names soon
 
