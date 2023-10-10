@@ -1,4 +1,4 @@
-# stopped working on it, new project: https://github.com/Anceph/minebot
+# stopped working on it, new project: https://github.com/Anceph/minebot (private for now)
 
 ## sbots
 
